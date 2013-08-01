@@ -22,16 +22,18 @@
 #
 class ceph::conf (
   $fsid,
-  $auth_type       = 'cephx',
-  $journal_size_mb = 4096,
-  $cluster_network = undef,
-  $public_network  = undef,
-  $mon_data        = '/var/lib/ceph/mon/mon.$id',
-  $osd_data        = '/var/lib/ceph/osd/osd.$id',
-  $osd_journal     = undef,
-  $mds_data        = '/var/lib/ceph/mds/mds.$id',
-  $rgw_data        = '/var/lib/ceph/radosgw',
-  $keyring_path     = undef,
+  $auth_type         = 'cephx',
+  $pool_default_size = undef,
+  $journal_size_mb   = 4096,
+  $cluster_network   = undef,
+  $public_network    = undef,
+  $mon_data          = '/var/lib/ceph/mon/mon.$id',
+  $mon_init_members  = undef,
+  $osd_data          = '/var/lib/ceph/osd/osd.$id',
+  $osd_journal       = undef,
+  $mds_data          = '/var/lib/ceph/mds/mds.$id',
+  $rgw_data          = '/var/lib/ceph/radosgw',
+  $keyring_path      = undef,
 ) {
 
   include 'ceph::package'
