@@ -5,6 +5,7 @@ define ceph::key (
   $keyring_path = "/var/lib/ceph/tmp/${name}.keyring",
   $user         = 'root',
   $group        = 'root',
+  $mode         = '0600',
 ) {
 
   if $secret_file == false {
@@ -18,6 +19,7 @@ define ceph::key (
       ensure  => file,
       owner   => $user,
       group   => $group,
+      mode    => $mode,
       require => Exec["ceph-key-${name}"]
     }
   } else {
@@ -31,6 +33,7 @@ define ceph::key (
         ensure  => file,
         owner   => $user,
         group   => $group,
+        mode    => $mode,
         source  => $keyring_path,
         require => Exec["ceph-key-${name}"]
       }
