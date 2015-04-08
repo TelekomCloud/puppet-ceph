@@ -163,25 +163,13 @@ define ceph::osd::device (
         require => Exec["ceph-osd-mkfs-${osd_id}"],
       }
 
-      exec { "ceph-osd-crush-add-${osd_id}":
-        command => "ceph osd crush add ${osd_id} 1 root=default host=${::hostname}",
-        onlyif  => "ceph osd dump |grep -q 'new ${blkid}'",
-        before  => Exec["ceph-osd-crush-set-${osd_id}"],
-        require => Exec["ceph-osd-register-${osd_id}"],
-      }
-
-      exec { "ceph-osd-crush-set-${osd_id}":
-        command => "ceph osd crush set ${osd_id} 1 root=default host=${::hostname}",
-        require => Exec["ceph-osd-register-${osd_id}"],
-      }
-
       service { "ceph-osd.${osd_id}":
         ensure    => running,
         provider  => $::ceph::params::service_provider,
         start     => "service ceph start osd.${osd_id}",
         stop      => "service ceph stop osd.${osd_id}",
         status    => "service ceph status osd.${osd_id}",
-        require   => Exec["ceph-osd-crush-set-${osd_id}"],
+        require   => Exec["ceph-osd-register-${osd_id}"],
         subscribe => Concat['/etc/ceph/ceph.conf'],
       }
 
