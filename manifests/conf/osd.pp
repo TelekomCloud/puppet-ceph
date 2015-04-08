@@ -3,6 +3,7 @@ define ceph::conf::osd (
   $cluster_addr = undef,
   $public_addr  = undef,
   $journal = undef,
+  $crush_location = undef,
 ) {
 
   if $journal {

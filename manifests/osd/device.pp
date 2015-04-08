@@ -12,6 +12,9 @@
 # [*journal*] path to place the journal
 #  Optional. Defaults to undef.
 #
+# [*crush_location*] the location of an OSD in terms of the CRUSH map’s hierarchy
+#  Optional. Defaults to undef.
+#
 # == Dependencies
 #
 # ceph::osd need to be called for the node beforehand. The
@@ -30,6 +33,7 @@
 define ceph::osd::device (
   $partition_device = true,
   $journal          = undef,
+  $crush_location   = undef,
 ) {
 
   include ceph::osd
@@ -128,6 +132,7 @@ define ceph::osd::device (
         cluster_addr => $::ceph::osd::cluster_address,
         public_addr  => $::ceph::osd::public_address,
         journal      => $journal,
+        crush_location => $crush_location,
       }
 
       $osd_data = regsubst($::ceph::conf::osd_data, '\$id', $osd_id)
