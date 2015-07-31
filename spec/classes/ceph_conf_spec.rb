@@ -66,7 +66,7 @@ describe 'ceph::conf' do
   describe "with default parameter and mds section disabled" do
 
     let :params do
-      { 
+      {
         :fsid         => 'qwertyuiop',
         :mds_activate => 'false'
       }
@@ -140,7 +140,9 @@ describe 'ceph::conf' do
         :osd_journal             => '/opt/ceph/journal/osd._id',
         :osd_mkfs_type           => 'ext4',
         :osd_mount_options       => 'user_xattr,rw,noatime,nodiratime',
-        :mds_data                => '/opt/ceph/mds._id'
+        :mds_data                => '/opt/ceph/mds._id',
+        :log_to_syslog           => 'true',
+        :err_to_syslog           => 'true',
       }
     end
 
@@ -173,6 +175,8 @@ describe 'ceph::conf' do
           '  osd pool default min size = 8',
           '  osd pool default crush rule = 1',
           '  mon osd full ratio = .90',
+          '  log_to_syslog = true',
+          '  err_to_syslog = true',
           '  mon osd nearfull ratio = .80',
           '  fsid = qwertyuiop',
           '[mon]',

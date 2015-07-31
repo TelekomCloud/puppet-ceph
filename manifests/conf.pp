@@ -94,6 +94,12 @@
 # [*mds_data*] The path to the MDS data.
 #   Optional. Defaults to '/var/lib/ceph/mds/mds.$id'
 #
+# [*log_to_syslog*] Set ceph to log to system syslog
+#   Optional, Default to 'false'.
+#
+# [*err_to_syslog*] Set ceph to log errors to system syslog.
+#   Optional. Default to 'false.
+#
 # == Dependencies
 #
 # none
@@ -103,6 +109,7 @@
 #  François Charlier <francois.charlier@enovance.com>
 #  Sébastien Han     <sebastien.han@enovance.com>
 #  Danny Al-Gaaf     <danny.al-gaaf@bisect.de>
+#  Jan Alexander Slabiak <j.slabiak@telekom.de>
 #
 # == Copyright
 #
@@ -136,7 +143,10 @@ class ceph::conf (
   $osd_max_backfills       = undef,
   $osd_recovery_max_active = undef,
   $mds_activate            = true,
-  $mds_data                = '/var/lib/ceph/mds/mds.$id'
+  $mds_data                = '/var/lib/ceph/mds/mds.$id',
+  $log_to_syslog           = undef,
+  $err_to_syslog           = undef,
+
 ) {
 
   include 'ceph::package'
@@ -150,6 +160,15 @@ class ceph::conf (
   if $osd_recovery_max_active != '' and !is_integer($osd_recovery_max_active) {
     fail('Only integers are allowed in the ceph::conf::osd_recovery_max_active order param')
   }
+
+  if $log_to_syslog != is_bool($log_to_syslog){
+    fail('Only true or flase are possible in the ceph::conf::log_to_syslog ')
+  }
+  if $err_to_syslog != is_bool($err_to_syslog){
+    fail('Only true or flase are possible in the ceph::conf::err_to_syslog ')
+  }
+
+
 
   if $osd_journal {
     $osd_journal_real = $osd_journal
