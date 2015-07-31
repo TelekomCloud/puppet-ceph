@@ -14,7 +14,7 @@ describe 'ceph::conf' do
     "/var/lib/puppet/concat/_etc_ceph_ceph.conf/fragments/01_ceph.conf"
   end
 
-  it { should include_class('ceph::package') }
+  it { should contain_class('ceph::package') }
 
   describe "with default parameters" do
 
@@ -25,7 +25,7 @@ describe 'ceph::conf' do
       'require' => 'Package[ceph]'
     ) }
 
-    it { should contain_concat__fragment('ceph.conf').with(
+    it { should contain_concat_fragment('ceph.conf').with(
       'target'  => '/etc/ceph/ceph.conf',
       'order'   => '01'
     ) }

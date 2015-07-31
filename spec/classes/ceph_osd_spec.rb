@@ -15,7 +15,7 @@ describe "ceph::osd" do
       { 'client_admin_secret' => 'shhh_dont_tell_anyone' }
     end
 
-    it { should include_class('ceph::package') }
+    it { should contain_class('ceph::package') }
 
     it { should contain_package('xfsprogs') }
     it { should contain_package('parted') }
