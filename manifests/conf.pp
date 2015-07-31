@@ -162,10 +162,10 @@ class ceph::conf (
   }
 
   # Fix me!
-  if $log_to_syslog != '' and !is_bool($log_to_syslog){
+  if $log_to_syslog != '' and is_bool($log_to_syslog){
     fail('Only true or false are possible in the ceph::conf::log_to_syslog ')
   }
-  if $err_to_syslog != '' and !is_bool($err_to_syslog){
+  if $err_to_syslog != '' and is_bool($err_to_syslog){
     fail('Only true or false are possible in the ceph::conf::err_to_syslog ')
   }
 

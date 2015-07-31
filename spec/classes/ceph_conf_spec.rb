@@ -150,46 +150,45 @@ describe 'ceph::conf' do
     ) }
 
     it 'should create the configuration fragment with the correct content' do
-      verify_contents(
-        subject,
-        fragment_path,
-        [
-          '[global]',
-          '  auth cluster required = dummy',
-          '  auth service required = dummy',
-          '  auth client required = dummy',
-          '  cephx require signatures = true',
-          '  cephx cluster require signatures = true',
-          '  cephx service require signatures = true',
-          '  cephx sign messages = true',
-          '  keyring = /etc/ceph/keyring',
-          '  cluster network = 10.0.0.0/16',
-          '  public network = 10.1.0.0/16',
-          '  osd pool default pg num = 16',
-          '  osd pool default pgp num = 16',
-          '  osd pool default size = 3',
-          '  osd pool default min size = 8',
-          '  osd pool default crush rule = 1',
-          '  mon osd full ratio = .90',
-          '  log_to_syslog = true',
-          '  err_to_syslog = true',
-          '  mon osd nearfull ratio = .80',
-          '  fsid = qwertyuiop',
-          '[mon]',
-          '  mon initial members = a , b , c',
-          '  mon data = /opt/ceph/mon._id',
-          '[osd]',
-          '  osd journal size = 8192',
-          '  filestore flusher = false',
-          '  osd data = /opt/ceph/osd._id',
-          '  osd journal = /opt/ceph/journal/osd._id',
-          '  osd mkfs type = ext4',
-          '  osd mount options ext4 = user_xattr,rw,noatime,nodiratime',
-          '  keyring = /opt/ceph/osd._id/keyring',
-          '[mds]',
-          '  mds data = /opt/ceph/mds._id',
-          '  keyring = /opt/ceph/mds._id/keyring'
-        ]
+      should contain_concat__fragment('ceph.conf').with_content(
+        ["[global]
+  auth cluster required = dummy
+  auth service required = dummy
+  auth client required = dummy
+  cephx require signatures = true
+  cephx cluster require signatures = true
+  cephx service require signatures = true
+  cephx sign messages = true
+  keyring = /etc/ceph/keyring
+  cluster network = 10.0.0.0/16
+  public network = 10.1.0.0/16
+  osd pool default pg num = 16
+  osd pool default pgp num = 16
+  osd pool default size = 3
+  osd pool default min size = 8
+  osd pool default crush rule = 1
+  mon osd full ratio = .90
+  log to syslog = true
+  err to syslog = true
+  mon osd nearfull ratio = .80
+  fsid = qwertyuiop
+[mon]
+  mon initial members = a , b , c
+  mon data = /opt/ceph/mon._id
+[osd]
+  osd journal size = 8192
+  journal dio = true
+  filestore flusher = false
+  osd data = /opt/ceph/osd._id
+  osd journal = /opt/ceph/journal/osd._id
+  osd mkfs type = ext4
+  osd mkfs options ext4 = -f -i size=2048 -n size=64k
+  osd mount options ext4 = user_xattr,rw,noatime,nodiratime
+  keyring = /opt/ceph/osd._id/keyring
+[mds]
+  mds data = /opt/ceph/mds._id
+  keyring = /opt/ceph/mds._id/keyring
+"]
       )
     end
 

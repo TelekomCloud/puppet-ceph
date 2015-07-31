@@ -43,7 +43,7 @@
   log to syslog = <%= @log_to_syslog %>
 <% end -%>
 <% if @err_to_syslog -%>
-  log to syslog = <%= @err_to_syslog %>
+  err to syslog = <%= @err_to_syslog %>
 <% end -%>
 <% if @mon_osd_nearfull_ratio -%>
   mon osd nearfull ratio = .<%= @mon_osd_nearfull_ratio %>
