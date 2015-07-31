@@ -1,4 +1,9 @@
 [mon.<%= @name %>]
   host = <%= @hostname %>
   mon addr = <%= @mon_addr %>:<%= @mon_port %>
-
+<% if @mon_cluster_log_to_syslog -%>
+	mon cluster log to syslog = <%= @mon_cluster_log_to_syslog %>
+<% end -%>
+<% if @mon_cluster_log_to_file -%>
+  mon cluster log file = <%= @mon_cluster_log_to_file %>
+<% end -%>

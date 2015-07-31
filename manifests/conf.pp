@@ -161,13 +161,13 @@ class ceph::conf (
     fail('Only integers are allowed in the ceph::conf::osd_recovery_max_active order param')
   }
 
-  if $log_to_syslog != is_bool($log_to_syslog){
-    fail('Only true or flase are possible in the ceph::conf::log_to_syslog ')
+  # Fix me!
+  if $log_to_syslog != '' and !is_bool($log_to_syslog){
+    fail('Only true or flase bare possible in the ceph::conf::log_to_syslog ')
   }
-  if $err_to_syslog != is_bool($err_to_syslog){
+  if $err_to_syslog != '' and !dirname($err_to_syslog){
     fail('Only true or flase are possible in the ceph::conf::err_to_syslog ')
   }
-
 
 
   if $osd_journal {
