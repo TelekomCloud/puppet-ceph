@@ -27,8 +27,8 @@ class { 'ceph::osd':
   # This is the case with default values, which leads to partition the disk
   describe 'when the device is empty with defaults' do
 
-    it { should include_class('ceph::osd') }
-    it { should include_class('ceph::conf') }
+    it { should contain_class('ceph::osd') }
+    it { should contain_class('ceph::conf') }
 
     it { should contain_exec('mktable_gpt_device').with(
       'command' => 'parted -a optimal --script /dev/device mktable gpt',
@@ -102,7 +102,7 @@ class { 'ceph::osd':
         'device'  => '/dev/device1',
         'atboot'  => true,
         'fstype'  => 'xfs',
-        'options' => 'rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
+        'options' => 'rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog',
         'pass'    => 2,
         'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/osd.56]']
       ) }

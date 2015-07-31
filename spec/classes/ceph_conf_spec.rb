@@ -14,7 +14,7 @@ describe 'ceph::conf' do
     "/var/lib/puppet/concat/_etc_ceph_ceph.conf/fragments/01_ceph.conf"
   end
 
-  it { should include_class('ceph::package') }
+  it { should contain_class('ceph::package') }
 
   describe "with default parameters" do
 
@@ -31,31 +31,29 @@ describe 'ceph::conf' do
     ) }
 
     it 'should create the configuration fragment with the correct content' do
-      verify_contents(
-        subject,
-        fragment_path,
-        [
-          '[global]',
-          '  auth cluster required = cephx',
-          '  auth service required = cephx',
-          '  auth client required = cephx',
-          '  keyring = /etc/ceph/keyring',
-          '  fsid = qwertyuiop',
-          '[mon]',
-          '  mon data = /var/lib/ceph/mon/mon.$id',
-          '[osd]',
-          '  osd journal size = 4096',
-          '  filestore flusher = false',
-          '  osd data = /var/lib/ceph/osd/osd.$id',
-          '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
-          '  osd mkfs type = xfs',
-          '  osd mkfs options xfs = -f -i size=2048 -n size=64k',
-          '  osd mount options xfs = rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
-          '  keyring = /var/lib/ceph/osd/osd.$id/keyring',
-          '[mds]',
-          '  mds data = /var/lib/ceph/mds/mds.$id',
-          '  keyring = /var/lib/ceph/mds/mds.$id/keyring'
-        ]
+       should contain_concat__fragment('ceph.conf').with_content(
+        ["[global]
+  auth cluster required = cephx
+  auth service required = cephx
+  auth client required = cephx
+  keyring = /etc/ceph/keyring
+  fsid = qwertyuiop
+[mon]
+  mon data = /var/lib/ceph/mon/mon.$id
+[osd]
+  osd journal size = 4096
+  journal dio = true
+  filestore flusher = false
+  osd data = /var/lib/ceph/osd/osd.$id
+  osd journal = /var/lib/ceph/osd/osd.$id/journal
+  osd mkfs type = xfs
+  osd mkfs options xfs = -f -i size=2048 -n size=64k
+  osd mount options xfs = rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog
+  keyring = /var/lib/ceph/osd/osd.$id/keyring
+[mds]
+  mds data = /var/lib/ceph/mds/mds.$id
+  keyring = /var/lib/ceph/mds/mds.$id/keyring
+"]
       )
     end
 
@@ -66,9 +64,9 @@ describe 'ceph::conf' do
   describe "with default parameter and mds section disabled" do
 
     let :params do
-      { 
-        :fsid         => 'qwertyuiop',
-        :mds_activate => 'false'
+      {
+        :fsid         => 'qwertyuiopa',
+        :mds_activate => 'undef'
       }
     end
 
@@ -85,28 +83,26 @@ describe 'ceph::conf' do
     ) }
 
     it 'should create the configuration fragment with the correct content' do
-      verify_contents(
-        subject,
-        fragment_path,
-        [
-          '[global]',
-          '  auth cluster required = cephx',
-          '  auth service required = cephx',
-          '  auth client required = cephx',
-          '  keyring = /etc/ceph/keyring',
-          '  fsid = qwertyuiop',
-          '[mon]',
-          '  mon data = /var/lib/ceph/mon/mon.$id',
-          '[osd]',
-          '  osd journal size = 4096',
-          '  filestore flusher = false',
-          '  osd data = /var/lib/ceph/osd/osd.$id',
-          '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
-          '  osd mkfs type = xfs',
-          '  osd mkfs options xfs = -f -i size=2048 -n size=64k',
-          '  osd mount options xfs = rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
-          '  keyring = /var/lib/ceph/osd/osd.$id/keyring'
-        ]
+       should contain_concat__fragment('ceph.conf').with_content(
+        ["[global]
+  auth cluster required = cephx
+  auth service required = cephx
+  auth client required = cephx
+  keyring = /etc/ceph/keyring
+  fsid = qwertyuiopa
+[mon]
+  mon data = /var/lib/ceph/mon/mon.$id
+[osd]
+  osd journal size = 4096
+  journal dio = true
+  filestore flusher = false
+  osd data = /var/lib/ceph/osd/osd.$id
+  osd journal = /var/lib/ceph/osd/osd.$id/journal
+  osd mkfs type = xfs
+  osd mkfs options xfs = -f -i size=2048 -n size=64k
+  osd mount options xfs = rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog
+  keyring = /var/lib/ceph/osd/osd.$id/keyring
+"]
       )
     end
 
@@ -140,7 +136,9 @@ describe 'ceph::conf' do
         :osd_journal             => '/opt/ceph/journal/osd._id',
         :osd_mkfs_type           => 'ext4',
         :osd_mount_options       => 'user_xattr,rw,noatime,nodiratime',
-        :mds_data                => '/opt/ceph/mds._id'
+        :mds_data                => '/opt/ceph/mds._id',
+        :log_to_syslog           => 'true',
+        :err_to_syslog           => 'true',
       }
     end
 
@@ -152,44 +150,45 @@ describe 'ceph::conf' do
     ) }
 
     it 'should create the configuration fragment with the correct content' do
-      verify_contents(
-        subject,
-        fragment_path,
-        [
-          '[global]',
-          '  auth cluster required = dummy',
-          '  auth service required = dummy',
-          '  auth client required = dummy',
-          '  cephx require signatures = true',
-          '  cephx cluster require signatures = true',
-          '  cephx service require signatures = true',
-          '  cephx sign messages = true',
-          '  keyring = /etc/ceph/keyring',
-          '  cluster network = 10.0.0.0/16',
-          '  public network = 10.1.0.0/16',
-          '  osd pool default pg num = 16',
-          '  osd pool default pgp num = 16',
-          '  osd pool default size = 3',
-          '  osd pool default min size = 8',
-          '  osd pool default crush rule = 1',
-          '  mon osd full ratio = .90',
-          '  mon osd nearfull ratio = .80',
-          '  fsid = qwertyuiop',
-          '[mon]',
-          '  mon initial members = a , b , c',
-          '  mon data = /opt/ceph/mon._id',
-          '[osd]',
-          '  osd journal size = 8192',
-          '  filestore flusher = false',
-          '  osd data = /opt/ceph/osd._id',
-          '  osd journal = /opt/ceph/journal/osd._id',
-          '  osd mkfs type = ext4',
-          '  osd mount options ext4 = user_xattr,rw,noatime,nodiratime',
-          '  keyring = /opt/ceph/osd._id/keyring',
-          '[mds]',
-          '  mds data = /opt/ceph/mds._id',
-          '  keyring = /opt/ceph/mds._id/keyring'
-        ]
+      should contain_concat__fragment('ceph.conf').with_content(
+        ["[global]
+  auth cluster required = dummy
+  auth service required = dummy
+  auth client required = dummy
+  cephx require signatures = true
+  cephx cluster require signatures = true
+  cephx service require signatures = true
+  cephx sign messages = true
+  keyring = /etc/ceph/keyring
+  cluster network = 10.0.0.0/16
+  public network = 10.1.0.0/16
+  osd pool default pg num = 16
+  osd pool default pgp num = 16
+  osd pool default size = 3
+  osd pool default min size = 8
+  osd pool default crush rule = 1
+  mon osd full ratio = .90
+  log to syslog = true
+  err to syslog = true
+  mon osd nearfull ratio = .80
+  fsid = qwertyuiop
+[mon]
+  mon initial members = a , b , c
+  mon data = /opt/ceph/mon._id
+[osd]
+  osd journal size = 8192
+  journal dio = true
+  filestore flusher = false
+  osd data = /opt/ceph/osd._id
+  osd journal = /opt/ceph/journal/osd._id
+  osd mkfs type = ext4
+  osd mkfs options ext4 = -f -i size=2048 -n size=64k
+  osd mount options ext4 = user_xattr,rw,noatime,nodiratime
+  keyring = /opt/ceph/osd._id/keyring
+[mds]
+  mds data = /opt/ceph/mds._id
+  keyring = /opt/ceph/mds._id/keyring
+"]
       )
     end
 

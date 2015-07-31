@@ -1,4 +1,6 @@
+require 'puppet'
 require 'spec_helper'
+require 'rspec-puppet'
 
 describe 'ceph::mon' do
 
@@ -34,8 +36,8 @@ class { "ceph::conf": fsid => "1234567890" }
     }
   end
 
-  it { should include_class('ceph::package') }
-  it { should include_class('ceph::conf') }
+  it { should contain_class('ceph::package') }
+  it { should contain_class('ceph::conf') }
 
   describe 'with secrets set' do
     it { should contain_ceph__conf__mon('42').with_mon_addr('169.254.0.1') }
@@ -97,6 +99,30 @@ class { "ceph::conf": fsid => "1234567890" }
     it { should contain_ceph__conf__mon('42').with(
       'mon_addr' => '10.0.0.254',
       'mon_port' => 9876
+    ) }
+  end
+
+  describe 'when enabling mon logging' do
+    let :params do
+      default_params.merge({
+        'mon_cluster_log_to_syslog' => true,
+      })
+    end
+
+    it { should contain_ceph__conf__mon('42').with(
+      'mon_cluster_log_to_syslog' => true,
+    ) }
+  end
+
+  describe 'when disable mon logging' do
+    let :params do
+      default_params.merge({
+        'mon_cluster_log_to_syslog' => false,
+      })
+    end
+
+    it { should contain_ceph__conf__mon('42').with(
+      'mon_cluster_log_to_syslog' => false,
     ) }
   end
 

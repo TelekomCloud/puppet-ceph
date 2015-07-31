@@ -17,6 +17,13 @@
 # [*mon_addr*] The mon's address.
 #   Optional. Defaults to the $ipaddress fact.
 #
+# [*mon_cluster_log_to_file*] Define path of mon logs.
+#   Default undef, defined by ceph to /var/log/ceph/$cluster.log
+#
+# [*mon_cluster_log_to_syslog*] Define if ceph should log to syslog
+#   Optional. Default to false. Possible parameter: [true|false]
+#
+#
 # == Dependencies
 #
 # none
@@ -24,6 +31,7 @@
 # == Authors
 #
 #  François Charlier francois.charlier@enovance.com
+#  Jan Alexander Slabiak j.slabiak@telekom.de
 #
 # == Copyright
 #
@@ -32,8 +40,10 @@
 define ceph::mon (
   $monitor_secret,
   $client_admin_secret,
-  $mon_port = 6789,
-  $mon_addr = $ipaddress
+  $mon_port                  = 6789,
+  $mon_addr                  = $ipaddress,
+  $mon_cluster_log_to_file   = undef,
+  $mon_cluster_log_to_syslog = undef,
 ) {
 
   include 'ceph::package'
@@ -43,8 +53,10 @@ define ceph::mon (
   $mon_data_real = regsubst($::ceph::conf::mon_data, '\$id', $name)
 
   ceph::conf::mon { $name:
-    mon_addr => $mon_addr,
-    mon_port => $mon_port,
+    mon_addr                  => $mon_addr,
+    mon_port                  => $mon_port,
+    mon_cluster_log_to_file   => $mon_cluster_log_to_file,
+    mon_cluster_log_to_syslog => $mon_cluster_log_to_syslog
   }
 
   #FIXME: monitor_secret will appear in "ps" output …
