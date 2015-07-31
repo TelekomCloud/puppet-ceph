@@ -102,7 +102,7 @@ class { 'ceph::osd':
         'device'  => '/dev/device1',
         'atboot'  => true,
         'fstype'  => 'xfs',
-        'options' => 'rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
+        'options' => 'rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog',
         'pass'    => 2,
         'require' => ['Exec[mkfs_device]', 'File[/var/lib/ceph/osd/osd.56]']
       ) }

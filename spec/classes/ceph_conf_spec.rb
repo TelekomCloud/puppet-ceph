@@ -25,37 +25,35 @@ describe 'ceph::conf' do
       'require' => 'Package[ceph]'
     ) }
 
-    it { should contain_concat_fragment('ceph.conf').with(
+    it { should contain_concat__fragment('ceph.conf').with(
       'target'  => '/etc/ceph/ceph.conf',
       'order'   => '01'
     ) }
 
     it 'should create the configuration fragment with the correct content' do
-      verify_contents(
-        subject,
-        fragment_path,
-        [
-          '[global]',
-          '  auth cluster required = cephx',
-          '  auth service required = cephx',
-          '  auth client required = cephx',
-          '  keyring = /etc/ceph/keyring',
-          '  fsid = qwertyuiop',
-          '[mon]',
-          '  mon data = /var/lib/ceph/mon/mon.$id',
-          '[osd]',
-          '  osd journal size = 4096',
-          '  filestore flusher = false',
-          '  osd data = /var/lib/ceph/osd/osd.$id',
-          '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
-          '  osd mkfs type = xfs',
-          '  osd mkfs options xfs = -f -i size=2048 -n size=64k',
-          '  osd mount options xfs = rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
-          '  keyring = /var/lib/ceph/osd/osd.$id/keyring',
-          '[mds]',
-          '  mds data = /var/lib/ceph/mds/mds.$id',
-          '  keyring = /var/lib/ceph/mds/mds.$id/keyring'
-        ]
+       should contain_concat__fragment('ceph.conf').with_content(
+        ["[global]
+  auth cluster required = cephx
+  auth service required = cephx
+  auth client required = cephx
+  keyring = /etc/ceph/keyring
+  fsid = qwertyuiop
+[mon]
+  mon data = /var/lib/ceph/mon/mon.$id
+[osd]
+  osd journal size = 4096
+  journal dio = true
+  filestore flusher = false
+  osd data = /var/lib/ceph/osd/osd.$id
+  osd journal = /var/lib/ceph/osd/osd.$id/journal
+  osd mkfs type = xfs
+  osd mkfs options xfs = -f -i size=2048 -n size=64k
+  osd mount options xfs = rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog
+  keyring = /var/lib/ceph/osd/osd.$id/keyring
+[mds]
+  mds data = /var/lib/ceph/mds/mds.$id
+  keyring = /var/lib/ceph/mds/mds.$id/keyring
+"]
       )
     end
 
@@ -67,8 +65,8 @@ describe 'ceph::conf' do
 
     let :params do
       {
-        :fsid         => 'qwertyuiop',
-        :mds_activate => 'false'
+        :fsid         => 'qwertyuiopa',
+        :mds_activate => 'undef'
       }
     end
 
@@ -85,28 +83,26 @@ describe 'ceph::conf' do
     ) }
 
     it 'should create the configuration fragment with the correct content' do
-      verify_contents(
-        subject,
-        fragment_path,
-        [
-          '[global]',
-          '  auth cluster required = cephx',
-          '  auth service required = cephx',
-          '  auth client required = cephx',
-          '  keyring = /etc/ceph/keyring',
-          '  fsid = qwertyuiop',
-          '[mon]',
-          '  mon data = /var/lib/ceph/mon/mon.$id',
-          '[osd]',
-          '  osd journal size = 4096',
-          '  filestore flusher = false',
-          '  osd data = /var/lib/ceph/osd/osd.$id',
-          '  osd journal = /var/lib/ceph/osd/osd.$id/journal',
-          '  osd mkfs type = xfs',
-          '  osd mkfs options xfs = -f -i size=2048 -n size=64k',
-          '  osd mount options xfs = rw,noatime,inode64,nobootwait,logbsize=256k,delaylog',
-          '  keyring = /var/lib/ceph/osd/osd.$id/keyring'
-        ]
+       should contain_concat__fragment('ceph.conf').with_content(
+        ["[global]
+  auth cluster required = cephx
+  auth service required = cephx
+  auth client required = cephx
+  keyring = /etc/ceph/keyring
+  fsid = qwertyuiopa
+[mon]
+  mon data = /var/lib/ceph/mon/mon.$id
+[osd]
+  osd journal size = 4096
+  journal dio = true
+  filestore flusher = false
+  osd data = /var/lib/ceph/osd/osd.$id
+  osd journal = /var/lib/ceph/osd/osd.$id/journal
+  osd mkfs type = xfs
+  osd mkfs options xfs = -f -i size=2048 -n size=64k
+  osd mount options xfs = rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog
+  keyring = /var/lib/ceph/osd/osd.$id/keyring
+"]
       )
     end
 

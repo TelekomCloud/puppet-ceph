@@ -45,21 +45,15 @@
 <% if @err_to_syslog -%>
   log to syslog = <%= @err_to_syslog %>
 <% end -%>
-
-
-
 <% if @mon_osd_nearfull_ratio -%>
   mon osd nearfull ratio = .<%= @mon_osd_nearfull_ratio %>
 <% end -%>
-
   fsid = <%= @fsid %>
-
 [mon]
 <% if @mon_init_members -%>
   mon initial members = <%= @mon_init_members %>
 <% end -%>
   mon data = <%= @mon_data %>
-
 [osd]
   osd journal size = <%= @journal_size_mb %>
   journal dio = <%= @osd_journal_dio %>
@@ -82,10 +76,8 @@
   osd max backfills = <%= @osd_max_backfills %>
 <% end -%>
   keyring = <%= @osd_data %>/keyring
-
-<% if @mds_activate -%>
+<% if @mds_activate == true -%>
 [mds]
   mds data = <%= @mds_data %>
   keyring = <%= @mds_data %>/keyring
 <% end -%>
-
