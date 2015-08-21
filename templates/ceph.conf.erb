@@ -52,9 +52,9 @@
 [mon]
 <% if @mon_init_members -%>
   mon initial members = <%= @mon_init_members %>
-  mon warn on legacy crush tunables = false
 <% end -%>
   mon data = <%= @mon_data %>
+  mon warn on legacy crush tunables = false
 [osd]
   osd journal size = <%= @journal_size_mb %>
   journal dio = <%= @osd_journal_dio %>
