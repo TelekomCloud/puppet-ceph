@@ -42,7 +42,9 @@
 <% if @mon_osd_nearfull_ratio -%>
   mon osd nearfull ratio = .<%= @mon_osd_nearfull_ratio %>
 <% end -%>
-
+<% if @mon_osd_down_out_subtree_limit -%>
+  mon osd down out subtree limit = <%= @mon_osd_down_out_subtree_limit %>
+<% end -%>
   fsid = <%= @fsid %>
 
 [mon]
@@ -68,6 +70,9 @@
 <% end -%>
 <% if @osd_recovery_max_active -%>
   osd recovery max active = <%= @osd_recovery_max_active %>
+<% end -%>
+<% if @osd_recovery_op_priority -%>
+  osd recovery op priority = <%= @osd_recovery_op_priority %>
 <% end -%>
 <% if @osd_max_backfills -%>
   osd max backfills = <%= @osd_max_backfills %>

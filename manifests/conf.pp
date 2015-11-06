@@ -46,6 +46,9 @@
 #   an OSD considered nearfull
 #   Optional. Float e.g. 90, NOTE: ends in config as .90
 #
+# [*mon_osd_down_out_subtree_limit*] The largest CRUSH unit type that Ceph will automatically mark out
+#   Optional. Defaults to 'rack'
+#
 # [*journal_size_mb*] The size of the journal in megabytes.
 #   Optional. Defaults to '4096'.
 #
@@ -88,6 +91,9 @@
 #   backfills allowed to or from a single OSD.
 #   Optional. Defaults to 10 .
 #
+# [*osd_recovery_op_priority*] The priority set for recovery operations
+#   Optional. Defaults to 10 .
+#
 # [*mds_activate*] Switch to activate the '[mds]' section in the config.
 #   Optional. Defaults to 'true'.
 #
@@ -122,6 +128,7 @@ class ceph::conf (
   $pool_default_crush_rule = undef,
   $mon_osd_full_ratio      = undef,
   $mon_osd_nearfull_ratio  = undef,
+  $mon_osd_down_out_subtree_limit = undef,
   $journal_size_mb         = 4096,
   $cluster_network         = undef,
   $public_network          = undef,
@@ -135,6 +142,7 @@ class ceph::conf (
   $osd_mount_options       = 'rw,noatime,inode64,nobootwait,noexec,logbsize=256k,delaylog',
   $osd_max_backfills       = undef,
   $osd_recovery_max_active = undef,
+  $osd_recovery_op_priority = undef,
   $mds_activate            = true,
   $mds_data                = '/var/lib/ceph/mds/mds.$id'
 ) {
@@ -151,6 +159,11 @@ class ceph::conf (
     fail('Only integers are allowed in the ceph::conf::osd_recovery_max_active order param')
   }
 
+  # Ensure that when the $osd_recovery_op_priority is define that's neither empty or integers.
+  if $osd_recovery_op_priority != '' and !is_integer($osd_recovery_op_priority) {
+    fail('Only integers are allowed in the ceph::conf::osd_recovery_op_priority order param')
+  }
+ 
   if $osd_journal {
     $osd_journal_real = $osd_journal
   } else {
